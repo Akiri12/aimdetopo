@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Valorant Keys — osu! style</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="wrap">
+    <aside>
+      <div>
+        <h1>Valorant Keys — osu! style</h1>
+        <div class="muted">Secuencias con teclas más usadas en Valorant. Tres modalidades: dos con letras de función (requiere teclado) y una de burbujas libres que se revientan con clic.</div>
+      </div>
+
+      <div class="row">
+        <button id="startBtn">▶️ Play</button>
+        <button id="pauseBtn" class="secondary">⏸️ Pausa (P)</button>
+        <button id="resetBtn" class="secondary">↺ Reiniciar</button>
+      </div>
+
+      <div>
+        <label>Modo
+          <select id="modeSel">
+            <option value="alt">Centro ⇄ Azar</option>
+            <option value="grid">Matriz 3×3</option>
+            <option value="free">Burbujas libres</option>
+          </select>
+        </label>
+        <label>Dificultad
+          <select id="diffSel">
+            <option value="easy">Fácil</option>
+            <option value="normal" selected>Normal</option>
+            <option value="hard">Difícil</option>
+          </select>
+        </label>
+        <label>Duración (s, ≤200) <input type="number" id="roundSec" min="20" max="200" step="5" value="120"/></label>
+        <div class="muted">Atajos: <span class="pill"><kbd>P</kbd> Pausa/Resumir</span></div>
+      </div>
+
+      <div class="hud">
+        <div class="card"><div class="muted">Puntaje</div><div id="score" class="big">0</div></div>
+        <div class="card"><div class="muted">Combo</div><div id="combo" class="big">0</div></div>
+        <div class="card"><div class="muted">Precisión</div><div id="acc" class="big">100%</div></div>
+        <div class="card"><div class="muted">Tiempo</div><div id="time" class="big">00:00</div></div>
+      </div>
+
+      <div class="footer">
+        <strong>Inicio:</strong> haz <strong>clic en cualquier lugar</strong> del área de juego o presiona <strong>Espacio</strong> para comenzar.<br>
+        Para reventar una burbuja: <strong>clic</strong> sobre ella. Hay <strong>estela del cursor</strong> que se desvanece sola.
+      </div>
+    </aside>
+
+    <div class="stage">
+      <canvas id="game"></canvas>
+      <div class="overlay" id="overlay">
+        <div class="center">
+          <h2>Listo para jugar 🎯🎵</h2>
+          <p>Haz <strong>clic</strong> o presiona <strong>Espacio</strong> para empezar. En el modo Centro⇄Azar y Matriz 3×3 aparecen burbujas con teclas. En burbujas libres rojas, solo haz clic.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
