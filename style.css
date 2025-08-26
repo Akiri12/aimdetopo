@@ -36,3 +36,6 @@ kbd{background:#131a33;border:1px solid rgba(255,255,255,.1);padding:2px 6px;bor
 .azul-claro {
   color: #b9c3ff;
 }
+
+/* opcional, solo si quieres más glow en el agujero */
+.pipe-glow { filter: drop-shadow(0 0 8px rgba(167,139,250,.8)); }
