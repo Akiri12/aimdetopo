@@ -1,12 +1,12 @@
 (() => {
-  const KEY_LABELS = ["W","A","S","D","SPACE","SHIFT","CTRL","Q","E","Z","X","C"]; // teclas reducidas
-  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-  const lerp=(a,b,t)=>a+(b-a)*t;
+  const KEY_LABELS = ["W","A","S","D","SPACE","SHIFT","CTRL","Q","E","Z","X","C"];
+  const clamp = (v,a,b)=>Math.max(a,Math.min(b,v));
+  const lerp = (a,b,t)=>a+(b-a)*t;
   const fmtTime = s => { const m = Math.floor(s/60).toString().padStart(2,'0'); const r = Math.floor(s%60).toString().padStart(2,'0'); return `${m}:${r}`; };
   const AC = new (window.AudioContext||window.webkitAudioContext)();
   const beep = (freq=600, dur=0.06, type='sine', vol=0.12) => {
     const o = AC.createOscillator(); const g = AC.createGain();
-    o.type=type; o.frequency.value=freq; o.connect(g); g.connect(AC.destination);
+    o.type = type; o.frequency.value = freq; o.connect(g); g.connect(AC.destination);
     const now = AC.currentTime; g.gain.setValueAtTime(0, now);
     g.gain.linearRampToValueAtTime(vol, now+0.005);
     g.gain.exponentialRampToValueAtTime(0.0001, now+dur);
@@ -23,7 +23,7 @@
     mode:'alt', diff:'normal',
     score:0, combo:0, shots:0, hits:0,
     bubble:null, nextIsCenter:true, trail:[], freeNextCenter:true,
-    gridPositions:[], coinMax:44, freeRadiusMax:96 // 1 pulgada aprox
+    gridPositions:[], coinMax:44, freeRadiusMax:96
   };
 
   function recalcGrid(){
@@ -96,8 +96,7 @@
 
   function makeBubble(x,y,label=null, free=false){
     const r = free ? 3 + Math.random()*5 : (Math.random()*0.5 +0.5)*(state.coinMax/2)*DPR;
-    const ttl = free ? 1.0 : DIFF[state.diff].ttl;
-    return {x,y,r,label, born:performance.now(), ttl, dead:false, armed:false, free};
+    return {x,y,r,label, born:performance.now(), dead:false, armed:false, free};
   }
 
   function spawnCenter(){ state.bubble = makeBubble(canvas.width/2, canvas.height/2, state.mode!=='free'? KEY_LABELS[Math.floor(Math.random()*KEY_LABELS.length)]:null, state.mode==='free'); }
@@ -116,7 +115,6 @@
           y = canvas.height/2 + Math.sin(angle) * dist;
           attempts++;
         } while(state.bubble && Math.hypot(x - state.bubble.x, y - state.bubble.y) < minDist && attempts < 20);
-
         state.bubble = makeBubble(x, y, null, true);
       }
       state.freeNextCenter = !state.freeNextCenter;
@@ -179,11 +177,8 @@
     }
   }
 
-  function applyHit(){ state.score += Math.floor(DIFF[state.diff].scoreBase*(1+state.combo*0.03)); state.combo++; state.hits++; flash(+1); beep(820,0.05,'triangle',0.12); }
-  function applyMiss(){ state.combo=0; flash(-1); beep(180,0.07,'sawtooth',0.08); }
-
-  let flashT=0, flashSign=1;
-  function flash(sign){ flashT = performance.now(); flashSign = sign; }
+  function applyHit(){ state.score += Math.floor(DIFF[state.diff].scoreBase*(1+state.combo*0.03)); state.combo++; state.hits++; beep(820,0.05,'triangle',0.12); }
+  function applyMiss(){ state.combo=0; beep(180,0.07,'sawtooth',0.08); }
 
   let raf=0;
   function loop(){
@@ -194,11 +189,6 @@
     const now=performance.now();
     state.time=(now-state.startTime)/1000;
     draw(now);
-
-    if(state.bubble && !state.bubble.dead && !state.bubble.free){
-      const age = (now-state.bubble.born)/1000;
-      if(age>state.bubble.ttl){ state.bubble.dead=true; applyMiss(); nextBubble(); }
-    }
 
     if(state.time>=state.roundSec){ endRound(); return; }
     updateHUD();
@@ -214,11 +204,8 @@
 
   function draw(now){
     ctx.clearRect(0,0,canvas.width,canvas.height);
-
-    const df=now-flashT;
-    if(df<220){ const a=1-df/220; ctx.fillStyle=flashSign>0? `rgba(120,255,214,${0.15*a})`:`rgba(255,100,100,${0.18*a})`; ctx.fillRect(0,0,canvas.width,canvas.height); }
-
     drawTrail(now);
+
     if(state.bubble && !state.bubble.dead) drawBubble(state.bubble, now);
 
     ctx.strokeStyle='rgba(230,236,255,.35)';
@@ -231,22 +218,8 @@
 
   function drawPaused(){ ctx.save(); ctx.globalAlpha=0.25; ctx.fillStyle='#000'; ctx.fillRect(0,0,canvas.width,canvas.height); ctx.restore(); }
 
-  function drawBubble(b, now){
-    const age = (now-b.born)/1000; const t=clamp(age/b.ttl,0,1);
-    const r = lerp(b.r*1.15,b.r*0.9,t);
-
-    // Solo dibuja halo si NO es burbuja libre
-    if(!b.free){
-      ctx.beginPath(); ctx.arc(b.x,b.y,r+10*DPR,0,Math.PI*2);
-      ctx.strokeStyle = `rgba(167,139,250,${0.25*(1-t)})`; ctx.lineWidth=10*DPR*(1-t); ctx.stroke();
-
-      ctx.beginPath(); 
-      ctx.lineWidth=3*DPR; 
-      ctx.strokeStyle='rgba(255,255,255,.7)';
-      ctx.arc(b.x,b.y,r+6*DPR,-Math.PI/2,-Math.PI/2+Math.PI*2*(1-t)); 
-      ctx.stroke();
-    }
-
+  function drawBubble(b){
+    const r = b.r;
     ctx.beginPath(); ctx.arc(b.x,b.y,r,0,Math.PI*2);
     ctx.fillStyle = b.free ? 'rgba(255,80,80,1)' : 'rgba(120,255,214,'+(b.armed?1:0.75)+')';
     ctx.fill();
@@ -256,12 +229,6 @@
       ctx.font=`${Math.max(12*DPR,r*0.8)}px system-ui,Segoe UI,Roboto`;
       ctx.textAlign='center'; ctx.textBaseline='middle';
       ctx.fillText(b.label,b.x,b.y);
-
-      if(!b.armed){
-        ctx.fillStyle='rgba(11,16,34,.8)';
-        ctx.font=`${12*DPR}px system-ui,Segoe UI`;
-        ctx.textBaseline='alphabetic'; ctx.fillText('',b.x,b.y+r+16*DPR);
-      }
     }
   }
 
@@ -272,7 +239,8 @@
     state.roundSec=clamp(parseInt(durInput.value||120,10),10,200);
     state.score=0; state.combo=0; state.hits=0; state.shots=0; state.bubble=null;
     state.nextIsCenter=true; state.trail=[]; state.freeNextCenter=true;
-    state.startTime=performance.now(); overlay.style.display='none';
+    state.startTime=performance.now(); 
+    overlay.style.display='none'; overlay.style.pointerEvents='none';
     cancelAnimationFrame(raf); raf=requestAnimationFrame(loop);
     spawnCenter();
   }
@@ -280,7 +248,8 @@
   function startBtnClick(){
     overlay.querySelector('.center').innerHTML='<h2>¡Listo! Comienza en 3 segundos...</h2>';
     overlay.style.display='flex';
-    setTimeout(()=>{startGame(); overlay.style.display='none';},3000);
+    overlay.style.pointerEvents='auto';
+    setTimeout(()=>{startGame(); overlay.style.display='none'; overlay.style.pointerEvents='none';},3000);
   }
 
   function pause(){ state.paused=!state.paused; }
@@ -290,14 +259,23 @@
     if(state.mode==='alt'){ if(state.score>state.bestAlt) state.bestAlt=state.score; }
     else { if(state.score>state.bestGrid) state.bestGrid=state.score; }
     localStorage.setItem(HS_KEY, JSON.stringify({bestAlt:state.bestAlt,bestGrid:state.bestGrid}));
+
     overlay.style.display='flex';
+    overlay.style.pointerEvents='auto';
+
     overlay.querySelector('.center').innerHTML=`
       <h2>Fin de la ronda</h2>
       <p><strong>Puntaje:</strong> ${state.score} · <strong>Combo máx:</strong> ${state.combo}
       · <strong>Precisión:</strong> ${state.shots?Math.round((state.hits/state.shots)*100):100}%</p>
       <div class="row" style="justify-content:center;margin-top:8px">
-        <button onclick="location.reload()" class="secondary">Nueva partida</button>
+        <button id="newGameBtn" class="secondary" disabled>Nueva partida</button>
       </div>`;
+
+    const btn = document.getElementById('newGameBtn');
+    setTimeout(() => {
+      btn.disabled = false;
+      btn.onclick = () => location.reload();
+    }, 2000);
   }
 
   startBtn.textContent='▶️ Play';
