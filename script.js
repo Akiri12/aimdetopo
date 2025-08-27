@@ -186,16 +186,17 @@
     }
   }
 
-  function nextBubble(){
-    if(state.mode==='alt'){ 
-      state.nextIsCenter ? spawnCenter() : spawnRandom(); 
-      state.nextIsCenter = !state.nextIsCenter; 
-    } else if(state.mode==='grid') {
-      spawnGrid();
-    } else if(state.mode==='free') {
-      spawnRandom();
-    }
+function nextBubble(){
+  if(state.mode==='alt' || state.mode==='pipe'){ 
+    state.nextIsCenter ? spawnCenter() : spawnRandom(); 
+    state.nextIsCenter = !state.nextIsCenter; 
+  } else if(state.mode==='grid') {
+    spawnGrid();
+  } else if(state.mode==='free') {
+    spawnRandom();
   }
+}
+
 
   function applyHit(){ 
     state.score += Math.floor(DIFF[state.diff].scoreBase*(1+state.combo*0.03)); 
@@ -333,3 +334,4 @@
   modeSel.addEventListener('change', ()=>{ state.mode=modeSel.value; });
   diffSel.addEventListener('change', ()=>{ state.diff=diffSel.value; });
 })();
+
