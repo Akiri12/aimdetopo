@@ -9,24 +9,24 @@
 <body>
   <div class="wrap">
     <aside>
-    <div>      
-      <h1 class="rosa-claro">
-        Valorant Keys — osu! style 
-        <span class="rosa-claro" style="font-size: 0.6em; font-family: 'Courier New', monospace;"><p>--en construcción--</p></span>
-      </h1>
-      <img src="images/chayanne.png" alt="Pixelart de Chayanne con flores" style="height: 150px;">
-      <div class="muted">Minijuegos para que mejores en Valo bebecito(a). 🌺 </div>
-    </div>
-      
+      <div>      
+        <h1 class="rosa-claro">
+          Valorant Keys — osu! style
+          <span class="rosa-claro" style="font-size: 0.6em; font-family: 'Courier New', monospace;"><p>--en construcción--</p></span>
+        </h1>
+        <img src="images/chayanne.png" alt="Pixelart de Chayanne con flores" style="height: 150px;">
+        <div class="muted">Minijuegos para que mejores en Valo bebecito(a). 🌺 </div>
+      </div>
+
       <div>
-        <h1 class="rosa-claro">Cómo jugar</h1>
-        <div>
-            <h1 class="azul-claro">Si te lo pide, presiona la tecla que señala la burbuja y con la tecla presionada haz clic con el ratón.</div>
-            </h1>
-            </div>
-      <div>
-            <h1 class="azul-claro">Intenta que la <strong>estela del cursor</strong> sea una línea recta, de lo contrario estarás haciendo movimientos innecesarios.
-            </h1>
+        <h1 class="rosa-claro" id="gameName">Centro ⇄ Azar</h1>
+        <div id="instructions">
+          <h3>Instrucciones:</h3>
+          <ul>
+            <li>Presiona la tecla que señala la burbuja y con la tecla presionada haz clic con el ratón.</li>
+            <li>Intenta que la estela del cursor sea una línea recta, de lo contrario estarás haciendo movimientos innecesarios.</li>
+          </ul>
+        </div>
       </div>
 
       <div class="row">
@@ -38,11 +38,10 @@
       <div>
         <label>Modo
           <select id="modeSel">
-            <option value="free">Burbujas libres</option>
-            <option value="pipe">Tubo</option>
             <option value="alt">Centro ⇄ Azar</option>
             <option value="grid">Matriz 3×3</option>
-
+            <option value="free">Burbujas libres</option>
+            <option value="pipe">Tubo</option>
           </select>
         </label>
         <label>Dificultad
@@ -63,7 +62,6 @@
         <div class="card"><div class="muted">Tiempo</div><div id="time" class="big">00:00</div></div>
       </div>
 
-
     </aside>
 
     <div class="stage">
@@ -80,6 +78,3 @@
   <script src="script.js"></script>
 </body>
 </html>
-
-
-
