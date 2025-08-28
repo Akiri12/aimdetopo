@@ -1,6 +1,5 @@
 (() => {
 
-// =========================
 // Index
 const instructionsText = {
   "alt": [
@@ -29,7 +28,6 @@ updateInstructions(modeSelect.value);
 // Actualizar instrucciones cuando el usuario cambie el modo
 modeSelect.addEventListener("change", () => {
   updateInstructions(modeSelect.value);
-  // Aquí también puedes reiniciar el juego si quieres
 });
 
 // =========================
@@ -72,7 +70,6 @@ function updateInstructions(mode) {
   const gameName = document.getElementById("gameName");
   const instructionsDiv = document.getElementById("instructions");
 
-  // Mapear nombre bonito para cada modo
   const names = {
     "alt": "Centro ⇄ Azar",
     "grid": "Matriz 3×3",
@@ -93,7 +90,6 @@ function updateInstructions(mode) {
     ul.appendChild(li);
   });
 }
-//==========================
 
 
   function recalcGrid(){
@@ -219,29 +215,20 @@ function updateInstructions(mode) {
   }
 
   function spawnRandom(){
-    if(state.mode==='free'){
-      if(state.freeNextCenter){
-        state.bubble = makeBubble(canvas.width/2, canvas.height/2, null, true);
-      } else {
-        let x, y, attempts = 0;
-        const minDist = 19;
-        do {
-          const angle = Math.random() * Math.PI * 2;
-          const dist = Math.random() * state.freeRadiusMax;
-          x = canvas.width/2 + Math.cos(angle) * dist;
-          y = canvas.height/2 + Math.sin(angle) * dist;
-          attempts++;
-        } while(state.bubble && Math.hypot(x - state.bubble.x, y - state.bubble.y) < minDist && attempts < 20);
-        state.bubble = makeBubble(x, y, null, true);
-      }
-      state.freeNextCenter = !state.freeNextCenter;
-    } else {
-      const m = 60*DPR;
-      const x = m + Math.random()*(canvas.width-2*m);
-      const y = m + Math.random()*(canvas.height-2*m);
-      state.bubble = makeBubble(x,y, KEY_LABELS[Math.floor(Math.random()*KEY_LABELS.length)]);
-    }
+  if(state.mode==='free'){
+    const spawnRadius = 40; // 🔹 Radio fijo en píxeles
+    const angle = Math.random() * Math.PI * 2;
+    const r = Math.sqrt(Math.random()) * spawnRadius;
+    const x = canvas.width / 2 + r * Math.cos(angle);
+    const y = canvas.height / 2 + r * Math.sin(angle);
+    state.bubble = makeBubble(x, y, null, true);
+  } else {
+    const m = 60 * DPR;
+    const x = m + Math.random() * (canvas.width - 2 * m);
+    const y = m + Math.random() * (canvas.height - 2 * m);
+    state.bubble = makeBubble(x, y, KEY_LABELS[Math.floor(Math.random() * KEY_LABELS.length)]);
   }
+}
 
   function spawnGrid(){
     const label = KEY_LABELS[Math.floor(Math.random()*KEY_LABELS.length)];
@@ -638,7 +625,6 @@ function updateInstructions(mode) {
       return;
     }
 
-    // ¿La bola está suficientemente cerca del centro?
     const bx = lerp(P.p0.x, P.p1.x, P.t);
     const by = lerp(P.p0.y, P.p1.y, P.t);
     const tol = Math.max(P.ballR*0.9, 10*DPR);
@@ -682,3 +668,4 @@ function updateInstructions(mode) {
   }
 
 })();
+
